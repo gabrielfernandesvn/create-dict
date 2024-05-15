@@ -1,19 +1,16 @@
 import re
 from typing import Dict
-from functools import reduce
 
 
-class Handle_Data_Types():  
+class Handle_Data_Types():
 
     def __init__(self) -> None:
         pass
 
-
-    def transform_data_type(self, data:str, translate_obj:dict | None = None):
-
+    def transform_data_type(self, data: str, translate_obj: dict | None = None):
         """
         'data' precisa ser VARCHAR(n), CHAR(n), NUMBER(n), NUMBER(n,n), DATE
-        
+
         'translate_obj' é opcional e direcionado para alterar as saídas caso deseje
         """
 
@@ -28,30 +25,30 @@ class Handle_Data_Types():
         is_decimal = has_number and has_comma
 
         if is_string:
-            return translate_obj.get("string","string") if translate_obj is not None else "string"
+            return translate_obj.get("string", "string") if translate_obj is not None else "string"
         elif is_integer:
-            return translate_obj.int.get("int","int") if translate_obj is not None else "int"
+            return translate_obj.int.get("int", "int") if translate_obj is not None else "int"
         elif is_decimal:
-            return {"type": "decimal", "precision":data.split('(')[1].split(',')[0], "scale":data.split('(')[1].split(',')[1].split(')')[0]}
+            return {"type": "decimal", "precision": data.split('(')[1].split(',')[0], "scale": data.split('(')[1].split(',')[1].split(')')[0]}
         else:
             return obj[data.lower()]
 
-    
-    def migrate(self, main_dict:Dict[str, str], datatypes_dict:Dict[str, str], translate_obj:Dict[str, str] | None = None):
-        
-        datatypes_dict_lower = {key.lower():value for key, value in datatypes_dict.items()}
-        migrated = {key:self.transform_data_type(datatypes_dict_lower[key.lower()],translate_obj) for key in main_dict.keys()}
+    def migrate(self, main_dict: Dict[str, str], datatypes_dict: Dict[str, str], translate_obj: Dict[str, str] | None = None):
+
+        datatypes_dict_lower = {
+            key.lower(): value for key, value in datatypes_dict.items()}
+        migrated = {key: self.transform_data_type(
+            datatypes_dict_lower[key.lower()], translate_obj) for key in main_dict.keys()}
 
         return migrated
-    
 
-    def make_dict(self, datatypes:str):
+    def make_dict(self, datatypes: str):
         linhas = datatypes.split("\n")
         sep_linhas = []
         for linha in linhas:
             line = linha.split(" ")[0:2]
             sep_linhas.append(line)
         filtered = [l for l in sep_linhas if len(l) == 2]
-        
-        dictt = {l[0]:l[1] for l in filtered}
+
+        dictt = {l[0]: l[1] for l in filtered}
         return dictt
