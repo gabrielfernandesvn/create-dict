@@ -2,6 +2,7 @@ import re
 from typing import Dict
 from functools import reduce
 
+
 class Handle_Data_Types():  
 
     def __init__(self) -> None:
