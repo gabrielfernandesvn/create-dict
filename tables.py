@@ -1,5 +1,6 @@
 import os
 from os import path
+import shutil
 from migrate import Handle_Data_Types
 from typing import Dict, Any
 import json
@@ -129,7 +130,8 @@ class Tables():
         json_path = path.join(path.dirname(__file__), "db", id)
         exists = path.exists(json_path)
         if exists:
-            os.remove(json_path)
+            shutil.rmtree(json_path)
+            # os.remove(json_path)
             print(f"Table {id} deleted!")
             return
 
