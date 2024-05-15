@@ -1,6 +1,6 @@
 from tables import Tables
 from migrate import Handle_Data_Types
-import json
+
 
 main_dict = {
     "attrib_01": "",
