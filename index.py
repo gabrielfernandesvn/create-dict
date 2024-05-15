@@ -197,4 +197,6 @@ datatypes = Handle_Data_Types()
 datatypes_dict = datatypes.make_dict(raw_datatypes)
 
 
-# table.load("S_SRV_REQ_X", main_dict, translation_dict, datatypes_dict, None)
+table.load("S_SRV_REQ_X", main_dict, translation_dict, datatypes_dict, None)
+
+# table.delete("S_SRV_REQ_X")

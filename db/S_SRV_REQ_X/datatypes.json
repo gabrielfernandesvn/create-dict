@@ -1,0 +1,114 @@
+{
+    "des_attrib_01": "string",
+    "des_attrib_02": "string",
+    "des_attrib_03": "string",
+    "des_attrib_04": "string",
+    "des_attrib_05": "string",
+    "des_attrib_06": "string",
+    "des_attrib_07": "string",
+    "des_attrib_08": "string",
+    "des_attrib_09": "string",
+    "des_attrib_10": "string",
+    "des_attrib_11": "string",
+    "des_attrib_12": "timestamp",
+    "des_attrib_13": "timestamp",
+    "des_attrib_14": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_15": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_16": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_17": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_18": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_19": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_20": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_21": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_22": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_23": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_24": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_25": {
+        "type": "decimal",
+        "precision": "22",
+        "scale": "7"
+    },
+    "des_attrib_26": "timestamp",
+    "des_attrib_27": "timestamp",
+    "des_attrib_28": "timestamp",
+    "des_attrib_29": "timestamp",
+    "des_attrib_30": "timestamp",
+    "des_attrib_31": "timestamp",
+    "des_attrib_32": "timestamp",
+    "des_attrib_33": "timestamp",
+    "des_attrib_34": "string",
+    "des_attrib_35": "string",
+    "des_attrib_36": "string",
+    "des_attrib_37": "string",
+    "des_attrib_38": "string",
+    "des_attrib_39": "string",
+    "des_attrib_40": "string",
+    "des_attrib_41": "string",
+    "des_attrib_42": "string",
+    "des_attrib_43": "string",
+    "des_attrib_44": "string",
+    "des_attrib_45": "string",
+    "des_attrib_46": "string",
+    "des_attrib_47": "string",
+    "ide_conflict": "string",
+    "dat_creation": "timestamp",
+    "ide_created_by": "string",
+    "dat_db_last_update": "timestamp",
+    "des_db_last_update_source": "string",
+    "dat_last_update": "timestamp",
+    "ide_last_update_by": "string",
+    "num_modification": {
+        "type": "decimal",
+        "precision": "10",
+        "scale": "0"
+    },
+    "ide_par_row": "string",
+    "ide_row": "string",
+    "des_x_attrib_01": "string",
+    "des_x_attrib_02": "string",
+    "des_x_attrib_03": "string"
+}
