@@ -131,7 +131,6 @@ class Tables():
         exists = path.exists(json_path)
         if exists:
             shutil.rmtree(json_path)
-            # os.remove(json_path)
             print(f"Table {id} deleted!")
             return
 

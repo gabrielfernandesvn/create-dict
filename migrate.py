@@ -42,13 +42,14 @@ class Handle_Data_Types():
 
         return migrated
 
-    def make_dict(self, datatypes: str):
-        linhas = datatypes.split("\n")
+    def make_dict(self, datatypes: str, delete_values: bool | None = None):
+        without_space = re.sub(r'[ \t]+', ' ', datatypes.strip())
+        linhas = without_space.split("\n")
         sep_linhas = []
         for linha in linhas:
             line = linha.split(" ")[0:2]
             sep_linhas.append(line)
-        filtered = [l for l in sep_linhas if len(l) == 2]
+        filtered = [l for l in sep_linhas if len(l) <= 2]
 
-        dictt = {l[0]: l[1] for l in filtered}
+        dictt = {l[0]: "" if delete_values else (l[1] if len(l) == 2 else "") for l in filtered}
         return dictt
