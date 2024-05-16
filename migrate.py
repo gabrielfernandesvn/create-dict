@@ -17,10 +17,12 @@ class Handle_Data_Types():
         translate_object = {"date": "timestamp"}
         obj = {**translate_object, **(translate_obj or {})}
 
-        is_string = bool(re.search(r'char', data, re.IGNORECASE))
+        has_blob = bool(re.search(r'blob', data, re.IGNORECASE))
+        has_char = bool(re.search(r'char', data, re.IGNORECASE))
         has_number = bool(re.search(r'number', data, re.IGNORECASE))
         has_comma = bool(re.search(r',', data, re.IGNORECASE))
 
+        is_string = has_char or has_blob
         is_integer = has_number and not has_comma
         is_decimal = has_number and has_comma
 
