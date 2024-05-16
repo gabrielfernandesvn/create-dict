@@ -127,12 +127,29 @@ class Tables():
         not_primary_keys = {key: value for key, value in data.items() if key not in pks}
 
         return {**primary_keys, **not_primary_keys}
+    
+    def make_full_dict(self, source_table_name:str, destiny_table_name:str, schema:str, pks:List[str], sort_keys:List[str]):
+        data = {
+            destiny_table_name: {
+                'tabela_origem': source_table_name,
+                'tabela_destino': destiny_table_name,
+                'ovs': schema,
+                'keys': [self.translate_dict[key] for key in pks],
+                'sort_keys': [self.translate_dict[key] for key in sort_keys],
+                'columns': self.translate_dict,
+                'columns_format': self.data_types                
+            }
+        }
+        return data
 
-    def load(self, id: str, data: Dict[str, Any], translation_dict: Dict[str, str], datatypes_dict: Dict[str, Any], pks:List[str], translate_obj: Dict[str, str] | None):
+    def load(self, id: str, data: Dict[str, Any], translation_dict: Dict[str, str], datatypes_dict: Dict[str, Any], source_table_name: str, destiny_table_name: str, schema: str, pks: List[str], sort_keys: List[str], translate_obj: Dict[str, str] | None):
         self.set_original_data(id, data)
-        sort_pks = self.sort_by_primary_key(data, pks)
+        sort_pks = self.sort_by_primary_key(data, [*pks, *sort_keys])
         self.translate(sort_pks, translation_dict, id)        
         self.handle_data_types(sort_pks, datatypes_dict, translate_obj, id)
+
+        full_dict = self.make_full_dict(source_table_name, destiny_table_name, schema, pks, sort_keys)
+        self.save_on_db(id, 'full_dict.json', full_dict)
 
         print(f"table --> {json.dumps(self.table, indent=4)}")
         print(

@@ -194,5 +194,5 @@ datatypes = Handle_Data_Types()
 translated_dict = datatypes.make_dict(to_translation_dict)
 main_dict = datatypes.make_dict(raw_dict, True)
 
-table.load("S_SRV_REQ_X", main_dict, translated_dict, raw_datatypes, [], None)
+table.load("S_SRV_REQ_DESTINY", main_dict, translated_dict, raw_datatypes, 's_srv_req', 's_srv_req_destiny', 'crm', ['created_by','last_upd_by'], ['last_upd'], None)
 # table.delete("")
