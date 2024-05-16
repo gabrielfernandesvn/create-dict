@@ -2,7 +2,7 @@ import os
 from os import path
 import shutil
 from migrate import Handle_Data_Types
-from typing import Dict, Any
+from typing import Dict, Any, List
 import json
 
 
@@ -26,18 +26,19 @@ class Tables():
     def data_types(self):
         return self._data_types
 
-    def set_original_data(self, id: str, data: Dict[str, Any]):
-        db_directory = path.join(path.dirname(__file__), "db", id)
-        db_path = path.join(db_directory, "original_data.json")
-        self.save(db_directory, db_path, data)
+    def set_original_data(self, id: str, data: Dict[str, Any]):        
+        self.save_on_db(id, 'original_data.json', data)
         self._table = data
 
-    def save(self, db_directory: str, db_path: str, data: Dict[str, Any]):
+    def save(self, db_directory: str, db_path: str, data: str | Dict[str, Any]):
         exists = path.exists(db_directory)
         if not exists:
             os.makedirs(db_directory, exist_ok=True)
         with open(db_path, 'w') as file:
-            json.dump(data, file, indent=4)
+            if isinstance(data, str):
+                file.write(data)
+            else:
+                json.dump(data, file, indent=4)
 
     def get_table(self, id: str):
         json_path = path.join(path.dirname(__file__),
@@ -65,13 +66,9 @@ class Tables():
         translated = self._transtale_with_key_replace(data, translation_dict)
         old_key_new_key = self._translate_with_value_replace(
             data, translation_dict)
-
-        db_directory = path.join(path.dirname(__file__), "db", dict_id)
-        translated_dir = path.join(db_directory, "translated.json")
-        old_key_new_key_dir = path.join(db_directory, "old_key_new_key.json")
-
-        self.save(db_directory, translated_dir, translated)
-        self.save(db_directory, old_key_new_key_dir, old_key_new_key)
+        
+        self.save_on_db(dict_id, "translated.json", translated)
+        self.save_on_db(dict_id, "old_key_new_key.json", old_key_new_key)        
 
         self._translate_dict = old_key_new_key
 
@@ -89,20 +86,29 @@ class Tables():
             return json_content
         return None
 
-    def handle_data_types(self, main_dict: Dict[str, Any], datatypes_dict: Dict[str, Any], translate_obj: Dict[str, str] | None, dict_id: str):
+    def handle_data_types(self, main_dict: Dict[str, Any], raw_datatypes: str, translate_obj: Dict[str, str] | None, dict_id: str):
+        datatypes = Handle_Data_Types()
+        datatypes_dict = datatypes.make_dict(raw_datatypes)
+
         handle_data = self._handle_data_types
         transformed_data = handle_data.migrate(
             main_dict, datatypes_dict, translate_obj)
+
+        self.save_on_db(dict_id, "raw_datatypes.txt", raw_datatypes)
 
         translate_dict = self.get_translate_dict(dict_id)
         if bool(translate_dict):
             translated = self._transtale_with_key_replace(
                 transformed_data, translate_dict)
 
-            db_directory = path.join(path.dirname(__file__), "db", dict_id)
-            db_path = path.join(db_directory, "datatypes.json")
-            self.save(db_directory, db_path, translated)
+            self.save_on_db(dict_id, "datatypes.json", translated)
+
             self._data_types = translated
+
+    def save_on_db(self, dict_id: str, file_name: str, data: str | Dict[str, Any]):
+        db_directory = path.join(path.dirname(__file__), "db", dict_id)
+        dt_path = path.join(db_directory, file_name)
+        self.save(db_directory, dt_path, data)
 
     def get_datatypes(self, id: str):
         json_path = path.join(path.dirname(__file__),
@@ -115,11 +121,18 @@ class Tables():
 
             return json_content
         return None
+ 
+    def sort_by_primary_key(self, data: Dict[str, Any], pks: List[str]):
+        primary_keys = {key: value for key, value in data.items() if key in pks}
+        not_primary_keys = {key: value for key, value in data.items() if key not in pks}
 
-    def load(self, id: str, data: Dict[str, Any], translation_dict: Dict[str, str], datatypes_dict: Dict[str, Any], translate_obj: Dict[str, str] | None):
+        return {**primary_keys, **not_primary_keys}
+
+    def load(self, id: str, data: Dict[str, Any], translation_dict: Dict[str, str], datatypes_dict: Dict[str, Any], pks:List[str], translate_obj: Dict[str, str] | None):
         self.set_original_data(id, data)
-        self.translate(data, translation_dict, id)
-        self.handle_data_types(data, datatypes_dict, translate_obj, id)
+        sort_pks = self.sort_by_primary_key(data, pks)
+        self.translate(sort_pks, translation_dict, id)        
+        self.handle_data_types(sort_pks, datatypes_dict, translate_obj, id)
 
         print(f"table --> {json.dumps(self.table, indent=4)}")
         print(
