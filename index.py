@@ -195,11 +195,6 @@ datatypes_dict = datatypes.make_dict(raw_datatypes)
 translated_dict = datatypes.make_dict(to_translation_dict)
 main_dict = datatypes.make_dict(raw_dict, True)
 
-print(json.dumps(main_dict, indent=4))
-#print(json.dumps(translated_dict, indent=4))
-
-
-
 # table.load("S_SRV_REQ_X", main_dict, translated_dict, datatypes_dict, None)
 
 # table.delete("S_SRV_REQ_X")
