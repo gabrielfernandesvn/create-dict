@@ -27,7 +27,7 @@ class Tables():
     @property
     def data__types(self):
         return self._data__types
-    
+
 
     def __transtale_with_key_replace(self, data: Dict[str, Any], translation_dict: Dict[str, Any]):
         translated = {translation_dict.get(
@@ -50,7 +50,7 @@ class Tables():
         self._translate_dict = old_key_new_key
 
         return {'translated': translated, 'old_key_new_key': old_key_new_key}
-        
+
 
     def handle_data_types(self, main_dict: Dict[str, Any], raw_datatypes: str, translate_obj: Dict[str, str] | None, dict_id: str):
         datatypes = Handle_Data_Types()
@@ -92,7 +92,7 @@ class Tables():
         return data
 
     def load(self, id: str, data: Dict[str, Any], translation_dict: Dict[str, str], raw_datatypes: Dict[str, Any], source_table_name: str, destiny_table_name: str, schema: str, pks: List[str], sort_keys: List[str], translate_obj: Dict[str, str] | None):
-        
+
         """
         Função para executar a criação do dict completo, são considerados os parâmetros:
 
@@ -138,4 +138,25 @@ class Tables():
         print(f"table --> {json.dumps(self.table, indent=4)}")
         print(
             f"translate_dict --> {json.dumps(self.translate_dict, indent=4)}")
-        print(f"datatypes --> {json.dumps(self.data_types, indent=4)}")    
+        print(f"datatypes --> {json.dumps(self.data_types, indent=4)}")
+
+    def create_markdown(ovs:str, source_table_name:str, destiny_table_name:str, path:str, database_schema:str):
+        mk = f"""**Source**
+        
+        Owner/Schema: {ovs.upper()}
+        Table/File: {source_table_name.upper()}
+        Path: {path.lower()}
+
+        **Raw Target**
+
+        Database/Schema: {database_schema.lower()}
+        Table Name: {source_table_name.lower()}
+
+        **Stg Target**
+
+        Database/Schema: {database_schema.lower()}
+        Table Name: {destiny_table_name.lower()}
+
+        | cloumn_name | primary key | ordinal_Position | Field Name |--|--|--|--|
+        
+        """

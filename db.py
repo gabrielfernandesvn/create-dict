@@ -27,26 +27,18 @@ class DB():
         self.save(db_directory, dt_path, data)
 
     def get_translate_dict(self, id: str):
-        json_path = path.join(path.dirname(__file__),
-                              "db", id, "old_key_new_key.json")
-        exists = path.exists(json_path)
-        if exists:
-            with open(json_path, "r", encoding='utf-8') as opened:
-                json_content = json.load(opened)
-            self.parent._translate_dict = json_content
-
-            return json_content
-        return None
+        return self.get(id, "old_key_new_key.json")
 
     def get_datatypes(self, id: str):
-        json_path = path.join(path.dirname(__file__),
-                              "db", id, "datatypes.json")
+        return self.get(id, "datatypes.json")
+    
+    def get(self, id:str, filename:str):
+        json_path = path.join(path.dirname(__file__), "db", id, filename)
         exists = path.exists(json_path)
         if exists:
             with open(json_path, "r", encoding='utf-8') as opened:
                 json_content = json.load(opened)
             self.parent._data_types = json_content
-
             return json_content
         return None
 
@@ -55,16 +47,7 @@ class DB():
         self.parent._table = data
 
     def get_table(self, id: str):
-        json_path = path.join(path.dirname(__file__),
-                              "db", id, "original_data.json")
-        exists = path.exists(json_path)
-        if exists:
-            with open(json_path, "r", encoding='utf-8') as opened:
-                json_content = json.load(opened)
-            self.parent._table = json_content
-
-            return json_content
-        return None
+        return self.get(id,"original_data.json")
 
     def delete(self, id: str):
         json_path = path.join(path.dirname(__file__), "db", id)
