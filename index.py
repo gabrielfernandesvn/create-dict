@@ -137,12 +137,12 @@ ATTRIB_08 CHAR(1 CHAR) Yes
 ATTRIB_09 CHAR(1 CHAR) Yes
 ATTRIB_10 CHAR(1 CHAR) Yes
 ATTRIB_11 CHAR(1 CHAR) Yes
-ATTRIB_12 DATE Yes
-ATTRIB_13 DATE Yes
-ATTRIB_14 NUMBER(22,7) Yes
-ATTRIB_15 NUMBER(22,7) Yes
-ATTRIB_16 NUMBER(22,7) Yes
-ATTRIB_17 NUMBER(22,7) Yes
+ATTRIB_12 timestamp Yes
+ATTRIB_13 datetime Yes
+ATTRIB_14 NUMBER(22, 7) Yes
+ATTRIB_15 NUMBER(22, 7) Yes
+ATTRIB_16 NUMBER(22, 7) Yes
+ATTRIB_17 NUMBER(22, 7) Yes
 ATTRIB_18 NUMBER(22,7) Yes
 ATTRIB_19 NUMBER(22,7) Yes
 ATTRIB_20 NUMBER(22,7) Yes
@@ -150,7 +150,7 @@ ATTRIB_21 NUMBER(22,7) Yes
 ATTRIB_22 NUMBER(22,7) Yes
 ATTRIB_23 NUMBER(22,7) Yes
 ATTRIB_24 NUMBER(22,7) Yes
-ATTRIB_25 NUMBER(22,7) Yes
+ATTRIB_25 decimal(22,7) Yes
 ATTRIB_26 DATE Yes
 ATTRIB_27 DATE Yes
 ATTRIB_28 DATE Yes
@@ -191,8 +191,8 @@ X_ATTRIB_03 VARCHAR2(30 CHAR) Yes
 table = Tables()
 
 datatypes = Handle_Data_Types()
-translated_dict = datatypes.make_dict(to_translation_dict)
+translation_dict = datatypes.make_dict(to_translation_dict)
 main_dict = datatypes.make_dict(raw_dict, True)
 
-table.load("S_SRV_REQ_DESTINY", main_dict, translated_dict, raw_datatypes, 's_srv_req', 's_srv_req_destiny', 'crm', ['created_by','last_upd_by'], ['last_upd'], None)
+table.load("nome_da_tabela", main_dict, translation_dict, raw_datatypes, 'source_name', 'destiny_name', 'ovs', ['pks'], ['sort_keys'], None)
 # table.delete("")

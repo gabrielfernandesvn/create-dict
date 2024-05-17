@@ -22,11 +22,14 @@ class Handle_Data_Types():
         has_char = bool(re.search(r'char', data, re.IGNORECASE))
         has_number = bool(re.search(r'number', data, re.IGNORECASE))
         has_comma = bool(re.search(r',', data, re.IGNORECASE))
+        has_int = bool(re.search(r'int', data, re.IGNORECASE))
+        has_datetime = bool(re.search(r'datetime', data, re.IGNORECASE))
+        has_decimal = bool(re.search(r'decimal', data, re.IGNORECASE))
 
-        is_timestamp = has_timestamp
+        is_timestamp = has_timestamp or has_datetime
         is_string = has_char or has_blob
-        is_integer = has_number and not has_comma
-        is_decimal = has_number and has_comma
+        is_integer = (has_number and not has_comma) or has_int
+        is_decimal = (has_number and has_comma) or has_decimal
 
         if is_string:
             return translate_obj.get("string", "string") if translate_obj is not None else "string"
@@ -54,7 +57,7 @@ class Handle_Data_Types():
         # print("linhas", linhas, "\n")
         sep_linhas = []
         for linha in linhas:
-            line = linha.strip().split(' ')[0:2]
+            line = linha.strip().replace(', ', ',').split(' ')[0:2]
             sep_linhas.append(line)
         filtered = [l for l in sep_linhas if len(l) <= 2]
         # print('sep_linhas', sep_linhas)
