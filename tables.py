@@ -200,6 +200,3 @@ class Tables():
             return
 
         print("Table not found")
-
-
-bruno = 'bruno passou aqui haa'
