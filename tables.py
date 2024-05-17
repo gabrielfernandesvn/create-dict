@@ -2,7 +2,7 @@ import os
 from os import path
 import shutil
 from migrate import Handle_Data_Types
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Union
 import json
 
 
@@ -66,7 +66,7 @@ class Tables():
         translated = self._transtale_with_key_replace(data, translation_dict)
         old_key_new_key = self._translate_with_value_replace(
             data, translation_dict)
-        
+
         self.save_on_db(dict_id, "translated.json", translated)
         self.save_on_db(dict_id, "old_key_new_key.json", old_key_new_key)        
 
@@ -121,14 +121,14 @@ class Tables():
 
             return json_content
         return None
- 
+
     def sort_by_primary_key(self, data: Dict[str, Any], pks: List[str]):
         primary_keys = {key: value for key, value in data.items() if key in pks}
         not_primary_keys = {key: value for key, value in data.items() if key not in pks}
 
         return {**primary_keys, **not_primary_keys}
-    
-    def make_full_dict(self, source_table_name:str, destiny_table_name:str, schema:str, pks:List[str], sort_keys:List[str]):
+
+    def make_full_dict(self, source_table_name: str, destiny_table_name: str, schema: str, pks: List[str], sort_keys: List[str]):
         data = {
             destiny_table_name: {
                 'tabela_origem': source_table_name,
@@ -142,11 +142,41 @@ class Tables():
         }
         return data
 
-    def load(self, id: str, data: Dict[str, Any], translation_dict: Dict[str, str], datatypes_dict: Dict[str, Any], source_table_name: str, destiny_table_name: str, schema: str, pks: List[str], sort_keys: List[str], translate_obj: Dict[str, str] | None):
+    def load(self, id: str, data: Dict[str, Any], translation_dict: Dict[str, str], raw_datatypes: Dict[str, Any], source_table_name: str, destiny_table_name: str, schema: str, pks: List[str], sort_keys: List[str], translate_obj: Dict[str, str] | None):
+        
+        """
+        Função para executar a criação do dict completo, são considerados os parâmetros:
+
+
+        id: str = Nome da tabela para salvar como pasta 
+        (ATENÇÃO! Caso você crie uma tabela sem trocar o valor desse parâmetro, a tabela criada por último substituirá a anterior)        
+
+        data: Dict[str, Any] = Com base na ordem das chaves desde dicionário, serão ordenados os demais. 
+        Trocar a ordem das chaves fará com que as traduções e datatypes também tenham suas ordens trocadas.
+
+        translation_dict: Dict[str, str] = Este deve ser o dicionário que possui as colunas desatualizadas (chaves) e 
+        colunas atualizadas (valor), será usado para fazer a tradução do resultado
+        
+        raw_datatypes: str = Este deve ser uma string contendo as colunas e datatypes provindos do mapeamento de origem.
+        
+        source_table_name: str = Este é o nome não traduzido da tabela
+        
+        destiny_table_name: str = Este é o nome traduzido da tabela 
+        
+        schema: str = este é o nome do schema (ovs) da tabela (ex.: "cusreg")
+        
+        pks: List[str] Esta é a lista de Primary Keys da tabela
+        
+        sort_keys: List[str] = Esta é a lista de Sort Keys (deduplicação) da tabela
+        
+        translate_obj: Dict[str, str] | None = Aqui você passa os valores para alterar as os tipos de dados. 
+        Por padrão é None;
+        """
+        
         self.set_original_data(id, data)
         sort_pks = self.sort_by_primary_key(data, [*pks, *sort_keys])
         self.translate(sort_pks, translation_dict, id)        
-        self.handle_data_types(sort_pks, datatypes_dict, translate_obj, id)
+        self.handle_data_types(sort_pks, raw_datatypes, translate_obj, id)
 
         full_dict = self.make_full_dict(source_table_name, destiny_table_name, schema, pks, sort_keys)
         self.save_on_db(id, 'full_dict.json', full_dict)
