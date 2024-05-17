@@ -1,4 +1,4 @@
-import json
+# import json
 from tables import Tables
 from migrate import Handle_Data_Types
 
@@ -195,4 +195,4 @@ translation_dict = datatypes.make_dict(to_translation_dict)
 main_dict = datatypes.make_dict(raw_dict, True)
 
 table.load("nome_da_tabela", main_dict, translation_dict, raw_datatypes, 'source_name', 'destiny_name', 'ovs', ['pks'], ['sort_keys'], None)
-# table.delete("")
+# table.DB.delete("")
