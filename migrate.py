@@ -57,7 +57,7 @@ class Handle_Data_Types():
         # print("linhas", linhas, "\n")
         sep_linhas = []
         for linha in linhas:
-            line = linha.strip().replace(', ', ',').split(' ')[0:2]
+            line = re.split(r'\s(?![^()]*\))', linha.strip().replace(', ', ','))[0:2]
             sep_linhas.append(line)
         filtered = [l for l in sep_linhas if len(l) <= 2]
         # print('sep_linhas', sep_linhas)

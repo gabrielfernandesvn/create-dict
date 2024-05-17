@@ -1,6 +1,7 @@
-# import json
 from tables import Tables
 from migrate import Handle_Data_Types
+
+
 
 
 raw_dict = """attrib_01 des_attrib_01
@@ -194,5 +195,21 @@ datatypes = Handle_Data_Types()
 translation_dict = datatypes.make_dict(to_translation_dict)
 main_dict = datatypes.make_dict(raw_dict, True)
 
-table.load("nome_da_tabela", main_dict, translation_dict, raw_datatypes, 'source_name', 'destiny_name', 'ovs', ['pks'], ['sort_keys'], None)
-# table.DB.delete("")
+params = {
+    'id':'nome_da_tabela',
+    'main_dict': main_dict,
+    'translation_dict': translation_dict,
+    'raw_datatypes': raw_datatypes,
+    'source_table_name': 's_src',
+    'destiny_table_name': 's_srcv',
+    'schema': 'crm',
+    'pks': ['attrib_12', 'attrib_05', 'attrib_08'],
+    'sort_keys': ['attrib_13'],
+    'path': 'raw/oracle/siebel/siebel/s_src/',
+    'database_raw': 'gnr_br_dev_pci_raw',
+    'database_sta': 'gnr_br_dev_ext_sta',
+    'translate_obj': None
+}
+
+
+# digite na linha de comando ./run

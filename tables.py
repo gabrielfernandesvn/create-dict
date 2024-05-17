@@ -4,6 +4,7 @@
 from migrate import Handle_Data_Types
 from typing import Dict, Any, List
 import json
+import re
 from db import DB
 
 
@@ -25,16 +26,16 @@ class Tables():
         return self._translate_dict
 
     @property
-    def data__types(self):
-        return self._data__types
+    def data_types(self):
+        return self._data_types
 
 
-    def __transtale_with_key_replace(self, data: Dict[str, Any], translation_dict: Dict[str, Any]):
+    def _transtale_with_key_replace(self, data: Dict[str, Any], translation_dict: Dict[str, Any]):
         translated = {translation_dict.get(
             key, key): value for key, value in data.items()}
         return translated
 
-    def __translate_with_value_replace(self, data: Dict[str, Any], translation_dict: Dict[str, str]):
+    def _translate_with_value_replace(self, data: Dict[str, Any], translation_dict: Dict[str, str]):
         old_key_and_new_key = {
             key: translation_dict[key] for key in data.keys()}
         return old_key_and_new_key
@@ -62,7 +63,7 @@ class Tables():
 
         self.DB.save_on_db(dict_id, "raw_datatypes.txt", raw_datatypes)
 
-        translate_dict = self.get_translate_dict(dict_id)
+        translate_dict = self.DB.get_translate_dict(dict_id)
         if bool(translate_dict):
             translated = self._transtale_with_key_replace(
                 transformed_data, translate_dict)
@@ -91,7 +92,7 @@ class Tables():
         }
         return data
 
-    def load(self, id: str, data: Dict[str, Any], translation_dict: Dict[str, str], raw_datatypes: Dict[str, Any], source_table_name: str, destiny_table_name: str, schema: str, pks: List[str], sort_keys: List[str], translate_obj: Dict[str, str] | None):
+    def load(self, id: str, data: Dict[str, Any], translation_dict: Dict[str, str], raw_datatypes: Dict[str, Any], source_table_name: str, destiny_table_name: str, schema: str, pks: List[str], sort_keys: List[str], path:str, database_raw:str, database_sta:str, translate_obj: Dict[str, str] | None):
 
         """
         Função para executar a criação do dict completo, são considerados os parâmetros:
@@ -127,7 +128,10 @@ class Tables():
         Por padrão é None;
         """
 
-        self.set_original_data(id, data)
+        self.DB.set_original_data(id, data)
+        
+        self.make_markdown_bruno_version(id, data, translation_dict, self._handle_data_types.make_dict(raw_datatypes), source_table_name, destiny_table_name, schema, pks, path, database_raw, database_sta)
+        
         sort_pks = self.sort_by_primary_key(data, [*pks, *sort_keys])
         self.translate(sort_pks, translation_dict, id)        
         self.handle_data_types(sort_pks, raw_datatypes, translate_obj, id)
@@ -138,9 +142,10 @@ class Tables():
         print(f"table --> {json.dumps(self.table, indent=4)}")
         print(
             f"translate_dict --> {json.dumps(self.translate_dict, indent=4)}")
+
         print(f"datatypes --> {json.dumps(self.data_types, indent=4)}")
 
-    def create_markdown(ovs:str, source_table_name:str, destiny_table_name:str, path:str, database_schema:str):
+    def create_markdown(ovs:str, source_table_name:str, destiny_table_name:str, path:str, database:str):
         mk = f"""**Source**
         
         Owner/Schema: {ovs.upper()}
@@ -149,14 +154,45 @@ class Tables():
 
         **Raw Target**
 
-        Database/Schema: {database_schema.lower()}
+        Database/Schema: {(database + '.' + ovs).lower()}
         Table Name: {source_table_name.lower()}
 
         **Stg Target**
 
-        Database/Schema: {database_schema.lower()}
+        Database/Schema: {database.lower()}
         Table Name: {destiny_table_name.lower()}
 
         | cloumn_name | primary key | ordinal_Position | Field Name |--|--|--|--|
         
         """
+        return mk
+   
+        
+    def make_markdown_bruno_version(self, dict_id:str, main_table:dict, tranlated_table:dict, datatypes_table:dict, source_table_name: str, destiny_table_name: str, schema: str, pks:List[str], path:str, database_raw:str, database_sta:str):
+        header = f"""**Source**
+        
+        Owner/Schema: {schema.upper()}
+        Table/File: {source_table_name.upper()}
+        Path: {path.lower()}
+
+        **Raw Target**
+
+        Database/Schema: {(database_raw + '.' + schema).lower()}
+        Table Name: {source_table_name.lower()}
+
+        **Stg Target**
+
+        Database/Schema: {(database_sta + '.' + schema).lower()}
+        Table Name: {destiny_table_name.lower()}
+
+        | cloumn_name | primary key | ordinal_Position | Field Name 
+        |--|--|--|--|        
+        """
+        print('datatypes_table: ', datatypes_table)
+        
+        data = [f'''| {key} | {"x" if key in pks else ''} | {({key.lower() : value for key, value in datatypes_table.items()})[key.lower()]} | {index} | {tranlated_table[key]} |''' for index, [key, value] in enumerate(main_table.items())]
+        md = re.sub(r'[ \t]+', '', header) + '\n'.join(data)
+        self.DB.save_on_db(dict_id, "markdown.md", md)
+        return md
+        
+

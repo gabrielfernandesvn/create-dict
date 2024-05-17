@@ -3,12 +3,12 @@ from os import path
 import shutil
 from typing import Dict, Any
 import json
-from tables import Tables
+import re
 
 
 class DB():
 
-    def __init__(self, parent: Tables) -> None:
+    def __init__(self, parent) -> None:
         self.parent = parent
 
     def save(self, db_directory: str, db_path: str, data: str | Dict[str, Any]):
@@ -27,10 +27,15 @@ class DB():
         self.save(db_directory, dt_path, data)
 
     def get_translate_dict(self, id: str):
-        return self.get(id, "old_key_new_key.json")
+        data = self.get(id, "old_key_new_key.json")
+        self.parent._translate_dict = data
+        print('self.parent._translate_dict: ', self.parent._translate_dict)
+        return data
 
     def get_datatypes(self, id: str):
-        return self.get(id, "datatypes.json")
+        data = self.get(id, "datatypes.json")
+        self.parent._data_types = data
+        return data
     
     def get(self, id:str, filename:str):
         json_path = path.join(path.dirname(__file__), "db", id, filename)
@@ -38,7 +43,7 @@ class DB():
         if exists:
             with open(json_path, "r", encoding='utf-8') as opened:
                 json_content = json.load(opened)
-            self.parent._data_types = json_content
+            # self.parent._data_types = json_content
             return json_content
         return None
 
@@ -47,7 +52,9 @@ class DB():
         self.parent._table = data
 
     def get_table(self, id: str):
-        return self.get(id,"original_data.json")
+        data = self.get(id,"original_data.json")
+        self.parent._table = data
+        return data
 
     def delete(self, id: str):
         json_path = path.join(path.dirname(__file__), "db", id)
@@ -58,3 +65,8 @@ class DB():
             return
 
         print("Table not found")
+
+
+string = 'id1 varchar(20 char) yes'
+palavras = re.split(r'\s(?![^()]*\))', string)
+print(palavras)
