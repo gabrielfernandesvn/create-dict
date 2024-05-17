@@ -148,31 +148,36 @@ class Tables():
         Função para executar a criação do dict completo, são considerados os parâmetros:
 
 
-        id: str = Nome da tabela para salvar como pasta 
-        (ATENÇÃO! Caso você crie uma tabela sem trocar o valor desse parâmetro, a tabela criada por último substituirá a anterior)        
+        - id: str = Nome da tabela para salvar como pasta 
+        (ATENÇÃO! Caso você crie uma tabela sem trocar o valor desse parâmetro, a tabela criada por último substituirá a anterior) 
 
-        data: Dict[str, Any] = Com base na ordem das chaves desde dicionário, serão ordenados os demais. 
+        - data: Dict[str, Any] = Com base na ordem das chaves desde dicionário, serão ordenados os demais. 
         Trocar a ordem das chaves fará com que as traduções e datatypes também tenham suas ordens trocadas.
+        É importante ressaltar que as PRIMARY KEYS e SORT KEYS vão estar no topo sempre, mesmo que você não coloque manualmente neste dict,
+        isso foi solicitação para otimização das tabelas.
 
-        translation_dict: Dict[str, str] = Este deve ser o dicionário que possui as colunas desatualizadas (chaves) e 
+        - translation_dict: Dict[str, str] = Este deve ser o dicionário que possui as colunas desatualizadas (chaves) e 
         colunas atualizadas (valor), será usado para fazer a tradução do resultado
-        
-        raw_datatypes: str = Este deve ser uma string contendo as colunas e datatypes provindos do mapeamento de origem.
-        
-        source_table_name: str = Este é o nome não traduzido da tabela
-        
-        destiny_table_name: str = Este é o nome traduzido da tabela 
-        
-        schema: str = este é o nome do schema (ovs) da tabela (ex.: "cusreg")
-        
-        pks: List[str] Esta é a lista de Primary Keys da tabela
-        
-        sort_keys: List[str] = Esta é a lista de Sort Keys (deduplicação) da tabela
-        
-        translate_obj: Dict[str, str] | None = Aqui você passa os valores para alterar as os tipos de dados. 
+
+        - raw_datatypes: str = Este deve ser uma string contendo as colunas e datatypes provindos do mapeamento de origem.
+
+        - source_table_name: str = Este é o nome não traduzido da tabela
+
+        - destiny_table_name: str = Este é o nome traduzido da tabela 
+
+        - schema: str = este é o nome do schema (ovs) da tabela (ex.: "cusreg")
+
+        - pks: List[str] Esta é a lista de Primary Keys da tabela 
+        (IMPORTANTE: Colocar as keys sem tradução, pois serão traduzidas automaticamente)
+
+        - sort_keys: List[str] = Esta é a lista de Sort Keys (deduplicação) da tabela
+        (IMPORTANTE: Colocar as keys sem tradução, pois serão traduzidas automaticamente)
+
+
+        - translate_obj: Dict[str, str] | None = Aqui você passa os valores para alterar as os tipos de dados. 
         Por padrão é None;
         """
-        
+
         self.set_original_data(id, data)
         sort_pks = self.sort_by_primary_key(data, [*pks, *sort_keys])
         self.translate(sort_pks, translation_dict, id)        
