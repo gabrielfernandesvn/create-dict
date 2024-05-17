@@ -128,6 +128,9 @@ class Tables():
         """
 
         self.set_original_data(id, data)
+        
+        self.make_markdown_bruno_version(id, data, translation_dict, self._handle_data_types.make_dict(raw_datatypes))
+        
         sort_pks = self.sort_by_primary_key(data, [*pks, *sort_keys])
         self.translate(sort_pks, translation_dict, id)        
         self.handle_data_types(sort_pks, raw_datatypes, translate_obj, id)
@@ -139,3 +142,10 @@ class Tables():
         print(
             f"translate_dict --> {json.dumps(self.translate_dict, indent=4)}")
         print(f"datatypes --> {json.dumps(self.data_types, indent=4)}")    
+        
+    def make_markdown_bruno_version(self, dict_id:str, main_table:dict, tranlated_table:dict, datatypes_table:dict):
+        data = [f'| {key} | | {datatypes_table[key]} | {index} | {tranlated_table[key]} |' for index, [key, value] in enumerate(main_table.items())]
+        md = '\n'.join(data)
+        self.DB.save_on_db(dict_id, "markdown.md", md)
+        return md
+        
