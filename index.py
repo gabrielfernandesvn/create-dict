@@ -193,7 +193,7 @@ translation_dict = datatypes.make_dict(to_translation_dict)
 main_dict = datatypes.make_dict(raw_dict, True)
 
 params = {
-    'id':'nome_da_tabela',
+    'id':'s_srv_req_xm',
     'main_dict': main_dict,
     'translation_dict': translation_dict,
     'raw_datatypes': raw_datatypes,
