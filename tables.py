@@ -130,7 +130,7 @@ class Tables():
 
         self.DB.set_original_data(id, data)
         
-        self.make_markdown_bruno_version(id, data, translation_dict, self._handle_data_types.make_dict(raw_datatypes), source_table_name, destiny_table_name, schema, pks, path, database_raw, database_sta)
+        self.make_markdown(id, data, translation_dict, self._handle_data_types.make_dict(raw_datatypes), source_table_name, destiny_table_name, schema, pks, path, database_raw, database_sta)
         
         sort_pks = self.sort_by_primary_key(data, [*pks, *sort_keys])
         self.translate(sort_pks, translation_dict, id)        
@@ -144,31 +144,9 @@ class Tables():
             f"translate_dict --> {json.dumps(self.translate_dict, indent=4)}")
 
         print(f"datatypes --> {json.dumps(self.data_types, indent=4)}")
-
-    def create_markdown(ovs:str, source_table_name:str, destiny_table_name:str, path:str, database:str):
-        mk = f"""**Source**
-        
-        Owner/Schema: {ovs.upper()}
-        Table/File: {source_table_name.upper()}
-        Path: {path.lower()}
-
-        **Raw Target**
-
-        Database/Schema: {(database + '.' + ovs).lower()}
-        Table Name: {source_table_name.lower()}
-
-        **Stg Target**
-
-        Database/Schema: {database.lower()}
-        Table Name: {destiny_table_name.lower()}
-
-        | cloumn_name | primary key | ordinal_Position | Field Name |--|--|--|--|
-        
-        """
-        return mk
    
         
-    def make_markdown_bruno_version(self, dict_id:str, main_table:dict, tranlated_table:dict, datatypes_table:dict, source_table_name: str, destiny_table_name: str, schema: str, pks:List[str], path:str, database_raw:str, database_sta:str):
+    def make_markdown(self, dict_id:str, main_table:dict, tranlated_table:dict, datatypes_dict:dict, source_table_name: str, destiny_table_name: str, schema: str, pks:List[str], path:str, database_raw:str, database_sta:str):
         header = f"""**Source**
         
         Owner/Schema: {schema.upper()}
@@ -185,14 +163,13 @@ class Tables():
         Database/Schema: {(database_sta + '.' + schema).lower()}
         Table Name: {destiny_table_name.lower()}
 
-        | cloumn_name | primary key | ordinal_Position | Field Name 
-        |--|--|--|--|        
+        | cloumn_name | primary key | Data Type | Ordinal Position | Field_Name 
+        |--|--|--|--|--|    
         """
-        print('datatypes_table: ', datatypes_table)
+        print('datatypes_dict: ', datatypes_dict)
         
-        data = [f'''| {key} | {"x" if key in pks else ''} | {({key.lower() : value for key, value in datatypes_table.items()})[key.lower()]} | {index} | {tranlated_table[key]} |''' for index, [key, value] in enumerate(main_table.items())]
+        data = [f'''| {key} | {"x" if key in pks else ''} | {({key.lower() : value for key, value in datatypes_dict.items()})[key.lower()]} | {index} | {tranlated_table[key]} |''' for index, [key, value] in enumerate(main_table.items())]
         md = re.sub(r'[ \t]+', '', header) + '\n'.join(data)
         self.DB.save_on_db(dict_id, "markdown.md", md)
         return md
         
-
