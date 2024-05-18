@@ -59,7 +59,7 @@ class Handle_Data_Types():
         for linha in linhas:
             line = re.split(r'\s(?![^()]*\))', linha.strip().replace(', ', ','))[0:2]
             sep_linhas.append(line)
-        filtered = [l for l in sep_linhas if len(l) <= 2]
+        filtered = [item for item in sep_linhas if len(item) <= 2]
         # print('sep_linhas', sep_linhas)
-        dictt = {l[0]: "" if delete_values else (l[1] if len(l) == 2 else "") for l in filtered}
+        dictt = {item[0]: "" if delete_values else (item[1] if len(item) == 2 else "") for item in filtered}
         return dictt

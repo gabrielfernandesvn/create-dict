@@ -1,4 +1,4 @@
-from tables import Tables
+# from tables import Tables
 from migrate import Handle_Data_Types
 
 
@@ -188,9 +188,6 @@ X_ATTRIB_02 VARCHAR2(30 CHAR) Yes
 X_ATTRIB_03 VARCHAR2(30 CHAR) Yes
 """
 
-
-table = Tables()
-
 datatypes = Handle_Data_Types()
 translation_dict = datatypes.make_dict(to_translation_dict)
 main_dict = datatypes.make_dict(raw_dict, True)
@@ -203,7 +200,7 @@ params = {
     'source_table_name': 's_src',
     'destiny_table_name': 's_srcv',
     'schema': 'crm',
-    'pks': ['attrib_12', 'attrib_05', 'attrib_08'],
+    'pks': ['attrib_06', 'attrib_08'],
     'sort_keys': ['attrib_13'],
     'path': 'raw/oracle/siebel/siebel/s_src/',
     'database_raw': 'gnr_br_dev_pci_raw',
