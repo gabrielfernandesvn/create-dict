@@ -5,7 +5,7 @@ from tables import Tables
 table = Tables()
 
 table.load(
-    params['id'], 
+    params['id'].upper(), 
     params['main_dict'],
     params['translation_dict'], 
     params['raw_datatypes'], 
